@@ -1,0 +1,55 @@
+STCP Dissector for Wireshark
+
+This is a very basic STCP dissector for Wireshark (see below for the main
+limitations of the dissector).
+
+Installation
+------------
+
+1. Make sure Lua with support for the "bit" library is installed. On
+   Ubuntu, this requires installing the following packages:
+
+   lua5.1
+   liblua5.1-bitop0
+
+2. Copy the file stcp.lua to ~/.wireshark/plugins
+
+
+Using the dissector
+-------------------
+
+Since, as far as Wireshark is concerned, the STCP packet is application-level
+data, we need to use a specific port so Wireshark will know what TCP packets
+contain STCP packets. The default is 23300, although this can be changed
+in stcp.lua. Note that the STCP project server chooses a random port every
+time. You will have to hardcode the 23300 port into the server.
+
+Wireshark should automatically detect the new dissector. If you capture TCP
+packets, it should flag non-empty packets on port 23300 as STCP packet. You
+should be able to see the STCP header fields in human-readable format right
+below the TCP packet data.
+
+Note that you can also apply the filter "stcp", and that will show only the
+TCP packets that contain STCP packets.
+
+
+Known issues
+------------
+
+Sometimes, multiple STCP packets will be sent in a single TCP packet. This is
+beyond the STCP network layer's control, since it can only ask TCP to send
+a STCP packet, but TCP may delay sending it until several STCP packets have
+been enqueued. This poses a problem for the receiving side, since the TCP
+header (and, thus, the STCP one) does not include the length of the packet.
+
+So, given a TCP packet with several STCP packets, it has no way of determining
+when the first STCP packet ends. The STCP network layer works around this by
+prepending each STCP packet with a 16-bit unsigned integer with the length
+of the packet.
+
+The dissector is currently unable to deal with TCP packets containing more
+than one STCP packet, and will misidentify them as a single STCP packet
+(where the payload is the remaining packets).
+
+It should not be too hard to add support for this, but I am not familiar
+enough with Lua (and Wireshark's Lua API) to do it myself.
