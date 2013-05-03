@@ -81,7 +81,7 @@ uint32_t _network_get_interface_ip(uint32_t peer_addr)
     char hostname[MAXHOSTNAMELEN+1];
     struct hostent *h, result;
     int err_rc;
-    char buf[256];
+    char buf[1024];
 
     if (gethostname(hostname, sizeof(hostname)) < 0)
     {
