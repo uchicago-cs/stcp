@@ -14,6 +14,16 @@ Installation
 
 2. Copy the file stcp.lua to ~/.wireshark/plugins
 
+3. Lua plugins will not work if Wireshark is run as root. You will need
+   to give your user permissions to perform network captures without
+   having root privileges. If you are on a Debian/Ubuntu system, just
+   follow these instructions:
+
+     http://ask.wireshark.org/questions/7523/ubuntu-machine-no-interfaces-listed
+
+   For other systems, there are general instructions here:
+
+     http://wiki.wireshark.org/CaptureSetup/CapturePrivileges
 
 Using the dissector
 -------------------
